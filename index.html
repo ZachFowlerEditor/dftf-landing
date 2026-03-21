@@ -250,9 +250,9 @@
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      top: 25%;
-      width: 300px;
-      height: 130px;
+      top: 10vh;
+      height: 28vh;
+      width: min(360px, 80vw);
       z-index: 15;
       cursor: default;
     }
@@ -266,7 +266,10 @@
       pointer-events: none;
       transition: opacity 0.25s ease;
       transform: rotate(-4deg);
-      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
     }
     .feed-easter-egg.visible {
       opacity: 1;
@@ -282,9 +285,100 @@
       box-shadow: 2px 3px 12px rgba(0,0,0,0.6);
       clip-path: polygon(0% 8%, 3% 0%, 8% 6%, 12% 0%, 18% 5%, 24% 0%, 30% 7%, 36% 1%, 42% 6%, 48% 0%, 54% 5%, 60% 1%, 66% 6%, 72% 0%, 78% 5%, 84% 0%, 90% 6%, 95% 1%, 100% 4%, 100% 88%, 97% 100%, 92% 94%, 87% 100%, 81% 93%, 76% 100%, 70% 95%, 65% 100%, 59% 94%, 53% 100%, 47% 95%, 41% 100%, 35% 95%, 29% 100%, 23% 93%, 17% 100%, 11% 95%, 5% 100%, 0% 95%);
     }
-    .feed-easter-egg-sub {
-      display: block; font-family: 'IBM Plex Mono', monospace;
-      font-size: 7px; letter-spacing: 0.18em; opacity: 0.65; margin-top: 1px;
+
+    /* ── Feedback modal ── */
+    .feedback-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .feedback-modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .feedback-modal {
+      position: relative;
+      background: #111113;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 36px 40px 32px;
+      width: min(480px, calc(100vw - 48px));
+      box-shadow: 0 24px 64px rgba(0,0,0,0.8);
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: rgba(224,221,213,0.35);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 6px;
+      transition: color 0.15s;
+    }
+    .modal-close:hover { color: rgba(224,221,213,0.8); }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      letter-spacing: 0.2em;
+      color: var(--text);
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+    .modal-title-strikethrough {
+      color: #e05555;
+      text-decoration: line-through;
+      text-decoration-color: #e05555;
+      text-decoration-thickness: 2px;
+    }
+    .feedback-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      min-height: 110px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .feedback-textarea::placeholder { color: var(--text-dim); }
+    .feedback-textarea:focus { border-color: rgba(232,169,72,0.4); }
+    .modal-submit {
+      margin-top: 14px;
+      padding: 10px 28px;
+      background: var(--warm);
+      color: var(--darkest);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.3em;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .modal-submit:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .modal-submit:disabled { opacity: 0.5; cursor: default; }
+    .modal-success {
+      display: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--warm);
+      margin-top: 18px;
     }
 
     /* Mobile adjustments */
@@ -328,13 +422,22 @@
   <!-- Invisible hover zone over the sign area -->
   <div class="sign-hover-zone" id="signHoverZone"></div>
 
-  <!-- Feed the Fowler easter egg (lower-left, hidden by default) -->
-  <a class="feed-easter-egg" href="#donate" id="feedEasterEgg">
-    <div class="feed-easter-egg-inner">
-      🍗 FEED THE FOWLER
-      <span class="feed-easter-egg-sub">tip jar coming soon</span>
+  <!-- Feedback easter egg (lower-left, hidden by default) -->
+  <button class="feed-easter-egg" id="feedEasterEgg">
+    <div class="feed-easter-egg-inner">FEEDBACK</div>
+  </button>
+
+  <!-- Feedback modal -->
+  <div class="feedback-modal-overlay" id="feedbackModalOverlay">
+    <div class="feedback-modal">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <h2 class="modal-title"><span class="modal-title-strikethrough">Don't</span> Feed the Fowler</h2>
+      <textarea class="feedback-textarea" id="feedbackText" placeholder="Leave a note, film review, random thought..."></textarea>
+      <br>
+      <button class="modal-submit" id="feedbackSubmit">SUBMIT</button>
+      <p class="modal-success" id="feedbackSuccess">Thanks for feeding the Fowler!</p>
     </div>
-  </a>
+  </div>
 
   <!-- App bar -->
   <div class="app-bar">
@@ -357,6 +460,7 @@
   </div>
 
   <script>
+    // Page transition
     document.getElementById('enterBtn').addEventListener('click', function(e) {
       e.preventDefault();
       var overlay = document.getElementById('pageTransition');
@@ -366,13 +470,87 @@
       }, 450);
     });
 
+    // Easter egg hover — stay visible when moving to the button
     var signZone = document.getElementById('signHoverZone');
     var feedEgg = document.getElementById('feedEasterEgg');
-    signZone.addEventListener('mouseenter', function() {
-      feedEgg.classList.add('visible');
+    var hideTimeout;
+
+    function showEgg() { clearTimeout(hideTimeout); feedEgg.classList.add('visible'); }
+    function scheduleHide() {
+      hideTimeout = setTimeout(function() { feedEgg.classList.remove('visible'); }, 150);
+    }
+
+    signZone.addEventListener('mouseenter', showEgg);
+    signZone.addEventListener('mouseleave', scheduleHide);
+    feedEgg.addEventListener('mouseenter', showEgg);
+    feedEgg.addEventListener('mouseleave', scheduleHide);
+
+    // Feedback modal
+    var SUPABASE_URL = 'https://huzweyntxcbyhjogvcxy.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_Xc7Igo5ZX-h-orG7gVu2lQ_IQz_USAO';
+
+    var modalOverlay = document.getElementById('feedbackModalOverlay');
+    var modalClose   = document.getElementById('modalClose');
+    var feedbackText = document.getElementById('feedbackText');
+    var submitBtn    = document.getElementById('feedbackSubmit');
+    var successMsg   = document.getElementById('feedbackSuccess');
+
+    feedEgg.addEventListener('click', function() {
+      feedbackText.value = '';
+      feedbackText.style.display = '';
+      submitBtn.style.display = '';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'SUBMIT';
+      successMsg.style.display = 'none';
+      modalOverlay.classList.add('active');
+      setTimeout(function() { feedbackText.focus(); }, 50);
     });
-    signZone.addEventListener('mouseleave', function() {
-      feedEgg.classList.remove('visible');
+
+    function closeModal() { modalOverlay.classList.remove('active'); }
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+      if (e.target === modalOverlay) closeModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    submitBtn.addEventListener('click', async function() {
+      var msg = feedbackText.value.trim();
+      if (!msg) { feedbackText.focus(); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'SENDING...';
+
+      try {
+        var res = await fetch(SUPABASE_URL + '/rest/v1/dftf_feedback', {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            message: msg,
+            page_url: window.location.href,
+            user_agent: navigator.userAgent
+          })
+        });
+
+        if (res.ok || res.status === 201) {
+          feedbackText.style.display = 'none';
+          submitBtn.style.display = 'none';
+          successMsg.style.display = 'block';
+          setTimeout(function() { closeModal(); }, 2500);
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SUBMIT';
+        }
+      } catch(err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'SUBMIT';
+      }
     });
   </script>
 
