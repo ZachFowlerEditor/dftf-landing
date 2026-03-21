@@ -250,16 +250,25 @@
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      top: 10vh;
+      top: calc(10vh + 40px);
       height: 28vh;
       width: min(360px, 80vw);
       z-index: 15;
       cursor: default;
     }
+    .upper-left-hover-zone {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 180px;
+      height: 80px;
+      z-index: 15;
+      cursor: default;
+    }
     .feed-easter-egg {
       position: fixed;
-      bottom: 36px;
-      left: 28px;
+      top: 20px;
+      left: 20px;
       z-index: 20;
       display: block;
       opacity: 0;
@@ -422,9 +431,12 @@
   <!-- Invisible hover zone over the sign area -->
   <div class="sign-hover-zone" id="signHoverZone"></div>
 
+  <!-- Invisible hover zone in upper-left corner -->
+  <div class="upper-left-hover-zone" id="upperLeftHoverZone"></div>
+
   <!-- Feedback easter egg (lower-left, hidden by default) -->
   <button class="feed-easter-egg" id="feedEasterEgg">
-    <div class="feed-easter-egg-inner">FEEDBACK</div>
+    <div class="feed-easter-egg-inner">FEED THE FOWLER</div>
   </button>
 
   <!-- Feedback modal -->
@@ -472,6 +484,7 @@
 
     // Easter egg hover — stay visible when moving to the button
     var signZone = document.getElementById('signHoverZone');
+    var upperLeftZone = document.getElementById('upperLeftHoverZone');
     var feedEgg = document.getElementById('feedEasterEgg');
     var hideTimeout;
 
@@ -482,6 +495,8 @@
 
     signZone.addEventListener('mouseenter', showEgg);
     signZone.addEventListener('mouseleave', scheduleHide);
+    upperLeftZone.addEventListener('mouseenter', showEgg);
+    upperLeftZone.addEventListener('mouseleave', scheduleHide);
     feedEgg.addEventListener('mouseenter', showEgg);
     feedEgg.addEventListener('mouseleave', scheduleHide);
 
