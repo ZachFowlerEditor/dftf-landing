@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://dftf.io/portfolio.html",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "zachfowler.net" }]
+    },
+    {
+      "source": "/(.*)",
+      "destination": "https://dftf.io/portfolio.html",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "www.zachfowler.net" }]
+    }
+  ]
+}
