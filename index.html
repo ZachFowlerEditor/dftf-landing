@@ -201,11 +201,55 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── App bar ── */
+    .app-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      padding: 10px 24px 14px;
+      background: linear-gradient(to top, rgba(12,12,14,0.85) 0%, transparent 100%);
+    }
+    .app-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      color: inherit;
+      opacity: 0.55;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .app-bar-item:hover { opacity: 0.9; transform: translateY(-2px); }
+    .app-bar-item.soon { cursor: default; pointer-events: none; }
+    .app-bar-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px; letter-spacing: 0.05em;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .app-bar-icon.cp  { background: linear-gradient(145deg, #1e2d1e, #0e1a0e); color: #5cad5c; }
+    .app-bar-icon.br  { background: linear-gradient(145deg, #1a1e2d, #0e1118); color: #5c7cad; }
+    .app-bar-icon.xml { background: linear-gradient(145deg, #2d1e1e, #1a0e0e); color: #ad5c5c; }
+    .app-bar-icon.cl  { background: linear-gradient(145deg, #2a2218, #1a150e); color: #e8a948; }
+    .app-bar-label {
+      font-size: 7.5px; letter-spacing: 0.12em;
+      color: rgba(224, 221, 213, 0.7);
+      text-transform: uppercase;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 480px) {
       .landing-content { padding: 36px 24px; }
       .brand-title { font-size: 2rem; letter-spacing: 0.14em; }
       .enter-btn { padding: 12px 32px; font-size: 1.1rem; }
+      .app-bar { gap: 20px; }
     }
   </style>
 </head>
@@ -239,6 +283,26 @@
       </p>
     </div>
 
+  </div>
+
+  <!-- App bar -->
+  <div class="app-bar">
+    <a class="app-bar-item" href="https://app.comppilot.io" target="_blank">
+      <div class="app-bar-icon cp">CP</div>
+      <span class="app-bar-label">CompPilot</span>
+    </a>
+    <a class="app-bar-item" href="https://brain.dftf.io" target="_blank">
+      <div class="app-bar-icon br">BR</div>
+      <span class="app-bar-label">Brain</span>
+    </a>
+    <span class="app-bar-item soon">
+      <div class="app-bar-icon xml">XML</div>
+      <span class="app-bar-label">XML Conv.</span>
+    </span>
+    <a class="app-bar-item" href="https://changelist.dftf.io" target="_blank">
+      <div class="app-bar-icon cl">CL</div>
+      <span class="app-bar-label">Change List</span>
+    </a>
   </div>
 
   <script>
