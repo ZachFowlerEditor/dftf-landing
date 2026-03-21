@@ -205,16 +205,15 @@
     /* ── App bar ── */
     .app-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 34px;
+      right: 28px;
       z-index: 20;
       display: flex;
-      justify-content: center;
-      gap: 28px;
-      padding: 12px 24px 18px;
-      background: rgba(10, 10, 12, 0.96);
-      border-top: 1px solid rgba(255,255,255,0.04);
+      gap: 20px;
+      padding: 10px 14px;
+      background: rgba(10, 10, 12, 0.85);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
     }
     .app-bar-item {
       display: flex;
@@ -251,7 +250,7 @@
       .landing-content { padding: 36px 24px; }
       .brand-title { font-size: 2rem; letter-spacing: 0.14em; }
       .enter-btn { padding: 12px 32px; font-size: 1.1rem; }
-      .app-bar { gap: 20px; }
+      .app-bar { gap: 14px; right: 16px; bottom: 20px; }
     }
   </style>
 </head>
@@ -298,10 +297,10 @@
       <div class="app-bar-icon xml">XML</div>
       <span class="app-bar-label">XML Conv.</span>
     </span>
-    <a class="app-bar-item" href="https://changelist.dftf.io" target="_blank">
+    <span class="app-bar-item soon">
       <div class="app-bar-icon cl">CL</div>
-      <span class="app-bar-label">Change List</span>
-    </a>
+      <span class="app-bar-label">Coming Soon</span>
+    </span>
   </div>
 
   <script>
