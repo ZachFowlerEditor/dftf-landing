@@ -245,6 +245,48 @@
       text-transform: uppercase;
     }
 
+    /* ── Feed the Fowler easter egg ── */
+    .sign-hover-zone {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 25%;
+      width: 300px;
+      height: 130px;
+      z-index: 15;
+      cursor: default;
+    }
+    .feed-easter-egg {
+      position: fixed;
+      bottom: 36px;
+      left: 28px;
+      z-index: 20;
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      transform: rotate(-4deg);
+      text-decoration: none;
+    }
+    .feed-easter-egg.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .feed-easter-egg-inner {
+      background: var(--warm);
+      color: var(--darkest);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem; letter-spacing: 0.22em;
+      padding: 8px 16px 10px;
+      border-radius: 2px;
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.6);
+      clip-path: polygon(0% 8%, 3% 0%, 8% 6%, 12% 0%, 18% 5%, 24% 0%, 30% 7%, 36% 1%, 42% 6%, 48% 0%, 54% 5%, 60% 1%, 66% 6%, 72% 0%, 78% 5%, 84% 0%, 90% 6%, 95% 1%, 100% 4%, 100% 88%, 97% 100%, 92% 94%, 87% 100%, 81% 93%, 76% 100%, 70% 95%, 65% 100%, 59% 94%, 53% 100%, 47% 95%, 41% 100%, 35% 95%, 29% 100%, 23% 93%, 17% 100%, 11% 95%, 5% 100%, 0% 95%);
+    }
+    .feed-easter-egg-sub {
+      display: block; font-family: 'IBM Plex Mono', monospace;
+      font-size: 7px; letter-spacing: 0.18em; opacity: 0.65; margin-top: 1px;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 480px) {
       .landing-content { padding: 36px 24px; }
@@ -283,6 +325,17 @@
 
   </div>
 
+  <!-- Invisible hover zone over the sign area -->
+  <div class="sign-hover-zone" id="signHoverZone"></div>
+
+  <!-- Feed the Fowler easter egg (lower-left, hidden by default) -->
+  <a class="feed-easter-egg" href="#donate" id="feedEasterEgg">
+    <div class="feed-easter-egg-inner">
+      🍗 FEED THE FOWLER
+      <span class="feed-easter-egg-sub">tip jar coming soon</span>
+    </div>
+  </a>
+
   <!-- App bar -->
   <div class="app-bar">
     <a class="app-bar-item" href="https://app.comppilot.io" target="_blank">
@@ -311,6 +364,15 @@
       setTimeout(function() {
         window.location.href = 'portfolio.html';
       }, 450);
+    });
+
+    var signZone = document.getElementById('signHoverZone');
+    var feedEgg = document.getElementById('feedEasterEgg');
+    signZone.addEventListener('mouseenter', function() {
+      feedEgg.classList.add('visible');
+    });
+    signZone.addEventListener('mouseleave', function() {
+      feedEgg.classList.remove('visible');
     });
   </script>
 
