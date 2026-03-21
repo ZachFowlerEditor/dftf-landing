@@ -372,13 +372,12 @@
 
     /* ─── "Feed the Fowler" Easter Egg ─── */
     .easter-egg {
-      position: fixed;
-      bottom: 28px; right: 28px;
-      z-index: 50;
-      transform: rotate(-8deg);
+      display: inline-block;
+      margin: 72px 0 0 0;
+      transform: rotate(-4deg);
       transition: transform 0.3s;
     }
-    .easter-egg:hover { transform: rotate(-4deg) scale(1.06); }
+    .easter-egg:hover { transform: rotate(-1deg) scale(1.06); }
     .easter-egg-inner {
       background: var(--warm);
       color: var(--darkest);
@@ -813,15 +812,17 @@
       </div>
     </section>
 
-  </main>
-
-  <!-- ─── "Feed the Fowler" Easter Egg ─── -->
-  <a class="easter-egg" href="#donate" title="Feed the Fowler">
-    <div class="easter-egg-inner">
-      🍗 FEED THE FOWLER
-      <span class="easter-egg-sub">tip jar coming soon</span>
+    <!-- ─── "Feed the Fowler" Easter Egg ─── -->
+    <div class="page" style="padding-bottom: 80px;">
+      <a class="easter-egg" href="#donate" title="Feed the Fowler">
+        <div class="easter-egg-inner">
+          🍗 FEED THE FOWLER
+          <span class="easter-egg-sub">tip jar coming soon</span>
+        </div>
+      </a>
     </div>
-  </a>
+
+  </main>
 
   <!-- ─── Footer ─── -->
   <footer>
