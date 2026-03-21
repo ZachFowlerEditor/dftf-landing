@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zach Fowler — Film Editor & Post Production</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Tokens ─── */
+    :root {
+      --warm:        #e8a948;
+      --warm-dim:    rgba(232, 169, 72, 0.15);
+      --warm-border: rgba(232, 169, 72, 0.22);
+      --dark:        #1a1a1e;
+      --darker:      #111113;
+      --darkest:     #0c0c0e;
+      --text:        #e0ddd5;
+      --text-mid:    #a09d97;
+      --text-dim:    #5a5855;
+      --border:      rgba(255, 255, 255, 0.055);
+      --border-hover:rgba(232, 169, 72, 0.2);
+      --card-bg:     #131315;
+    }
+
+    /* ─── Reset ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      background: var(--darkest);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── Background layer ─── */
+    .bg-fixed { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .bg-gradient {
+      background:
+        radial-gradient(ellipse 100% 60% at 50% -5%,  rgba(232,169,72,0.065) 0%, transparent 65%),
+        radial-gradient(ellipse 60%  40% at 10% 50%,  rgba(232,169,72,0.025) 0%, transparent 60%),
+        radial-gradient(ellipse 50%  30% at 90% 80%,  rgba(232,169,72,0.02)  0%, transparent 60%);
+    }
+    .bg-grain {
+      opacity: 0.038;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* ─── Page wrapper ─── */
+    .page { position: relative; z-index: 1; max-width: 1480px; margin: 0 auto; padding: 0 48px; }
+    @media (max-width: 768px) { .page { padding: 0 20px; } }
+
+    /* ─── Header ─── */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(12, 12, 14, 0.88);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1480px; margin: 0 auto; padding: 0 48px;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+    }
+    @media (max-width: 768px) { .header-inner { padding: 0 20px; } }
+    .site-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem; letter-spacing: 0.28em; color: var(--warm);
+    }
+    .site-logo a { color: inherit; }
+    .site-nav { display: flex; gap: 28px; list-style: none; }
+    .site-nav a {
+      font-size: 10px; letter-spacing: 0.22em; color: var(--text-dim);
+      transition: color 0.2s;
+    }
+    .site-nav a:hover { color: var(--text-mid); }
+    .nav-imdb { color: var(--warm) !important; opacity: 0.7; }
+    .nav-imdb:hover { opacity: 1 !important; }
+
+    /* ─── Hero ─── */
+    .intro { padding: 96px 0 64px; }
+    .intro-eyebrow {
+      font-size: 10px; letter-spacing: 0.38em; color: var(--warm);
+      margin-bottom: 20px; opacity: 0.9;
+    }
+    .intro-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 9vw, 9rem);
+      letter-spacing: 0.06em; line-height: 0.88;
+      color: var(--text); margin-bottom: 28px;
+    }
+    .intro-name span { color: var(--warm); opacity: 0.85; }
+    .intro-stats-line {
+      font-size: 11px; letter-spacing: 0.16em; color: var(--text-mid);
+      margin-bottom: 40px; line-height: 1.7;
+    }
+    .intro-stats-line strong { color: var(--warm); font-weight: 500; }
+
+    /* ─── Studio strip ─── */
+    .studios-strip {
+      overflow: hidden; margin-bottom: 40px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      position: relative;
+    }
+    .studios-strip::before,
+    .studios-strip::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+      pointer-events: none;
+    }
+    .studios-strip::before { left: 0; background: linear-gradient(to right, var(--darkest), transparent); }
+    .studios-strip::after  { right: 0; background: linear-gradient(to left, var(--darkest), transparent); }
+    .studios-track {
+      display: flex; gap: 56px; width: max-content;
+      animation: scrollStudios 22s linear infinite;
+    }
+    .studios-strip:hover .studios-track { animation-play-state: paused; }
+    .studio-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.95rem; letter-spacing: 0.32em;
+      color: var(--text-dim); white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .studio-name:hover { color: var(--text-mid); }
+    @keyframes scrollStudios {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ─── Laurels / Accolades ─── */
+    .accolades {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 48px;
+    }
+    .accolade-chip {
+      font-size: 9px; letter-spacing: 0.22em; color: var(--warm);
+      border: 1px solid rgba(232,169,72,0.2); border-radius: 2px;
+      padding: 4px 12px; opacity: 0.75; white-space: nowrap;
+    }
+
+    /* ─── Apps row ─── */
+    .apps-section { margin-bottom: 72px; }
+    .apps-label {
+      font-size: 9px; letter-spacing: 0.38em; color: var(--text-dim);
+      margin-bottom: 18px; text-transform: uppercase;
+    }
+    .apps-row {
+      display: flex; gap: 24px; flex-wrap: wrap;
+    }
+    .app-icon {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      cursor: pointer; text-decoration: none; color: inherit;
+      transition: transform 0.2s;
+    }
+    .app-icon:hover { transform: translateY(-4px); }
+    .app-icon-img {
+      width: 72px; height: 72px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 0.06em;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .app-icon:hover .app-icon-img {
+      border-color: var(--warm-border);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    }
+    .app-icon-img.cp  { background: linear-gradient(145deg, #1e2d1e, #0e1a0e); color: #5cad5c; }
+    .app-icon-img.br  { background: linear-gradient(145deg, #1a1e2d, #0e1118); color: #5c7cad; }
+    .app-icon-img.xml { background: linear-gradient(145deg, #2d1e1e, #1a0e0e); color: #ad5c5c; }
+    .app-icon-img.cl  { background: linear-gradient(145deg, #2a2218, #1a150e); color: var(--warm); }
+    .app-icon-name {
+      font-size: 9.5px; letter-spacing: 0.14em; color: var(--text-mid);
+      text-align: center; max-width: 80px; line-height: 1.3;
+    }
+    .coming-soon-dot {
+      display: inline-block;
+      font-size: 7px; letter-spacing: 0.2em; color: var(--warm);
+      background: rgba(232,169,72,0.1); border: 1px solid rgba(232,169,72,0.2);
+      border-radius: 2px; padding: 1px 5px; margin-top: 2px;
+    }
+
+    /* ─── Section headers ─── */
+    .section-head {
+      display: flex; align-items: baseline; gap: 18px;
+      margin-bottom: 28px; padding-top: 80px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+      letter-spacing: 0.14em; color: var(--text); line-height: 1;
+      white-space: nowrap;
+    }
+    .section-count {
+      font-size: 10px; letter-spacing: 0.2em; color: var(--text-dim); flex-shrink: 0;
+    }
+    .section-rule { height: 1px; background: var(--border); flex: 1; min-width: 0; }
+
+    /* ─── Featured grid ─── */
+    .featured-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-bottom: 0;
+    }
+    @media (max-width: 1000px) { .featured-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px)  { .featured-grid { grid-template-columns: 1fr 1fr; gap: 12px; } }
+
+    .featured-card {
+      position: relative; display: block;
+      border-radius: 6px; overflow: hidden;
+      border: 1px solid var(--border);
+      transition: border-color 0.35s, box-shadow 0.35s, transform 0.35s;
+      cursor: pointer; background: var(--card-bg);
+    }
+    .featured-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(232,169,72,0.08);
+      transform: translateY(-5px);
+    }
+    .featured-poster {
+      aspect-ratio: 2/3; position: relative; overflow: hidden;
+    }
+    .featured-poster img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; transition: transform 0.5s ease, opacity 0.3s;
+    }
+    .featured-card:hover .featured-poster img { transform: scale(1.03); }
+    .featured-poster img.hidden { opacity: 0; }
+
+    /* Placeholder */
+    .poster-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px;
+      background: linear-gradient(160deg, #1c1c22 0%, #0e0e12 100%);
+    }
+    .placeholder-initials {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: 0.1em; color: rgba(232,169,72,0.18);
+      line-height: 1; text-align: center; padding: 0 16px;
+    }
+
+    /* Overlay at bottom of featured card */
+    .featured-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 32px 18px 18px;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%);
+      z-index: 3;
+    }
+    .featured-role-tag {
+      font-size: 9px; letter-spacing: 0.28em; color: var(--warm);
+      margin-bottom: 6px; opacity: 0.9;
+    }
+    .featured-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+      letter-spacing: 0.08em; color: var(--text); line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .featured-meta {
+      font-size: 9.5px; letter-spacing: 0.15em; color: var(--text-mid);
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .meta-dot { color: var(--text-dim); }
+    .featured-cast {
+      font-size: 9px; letter-spacing: 0.12em; color: var(--text-dim);
+      margin-top: 6px; line-height: 1.6;
+    }
+
+    /* Badges */
+    .badge-tray {
+      position: absolute; top: 12px; left: 12px; z-index: 4;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 8.5px; letter-spacing: 0.18em;
+      border-radius: 2px; padding: 3px 8px;
+      backdrop-filter: blur(4px);
+    }
+    .badge-season {
+      background: rgba(232,169,72,0.18); border: 1px solid rgba(232,169,72,0.35);
+      color: var(--warm);
+    }
+    .badge-soon {
+      background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-mid);
+    }
+    .badge-studio {
+      background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-dim);
+    }
+    .rating-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 4;
+      background: rgba(0,0,0,0.75); border: 1px solid rgba(232,169,72,0.25);
+      border-radius: 3px; padding: 3px 8px;
+      font-size: 9.5px; letter-spacing: 0.12em; color: var(--warm);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Coming Soon overlay on poster */
+    .poster-coming-soon {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.4);
+    }
+    .poster-coming-soon-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: 0.3em;
+      color: var(--warm); opacity: 0.8;
+      background: rgba(0,0,0,0.6); padding: 8px 18px;
+      border: 1px solid rgba(232,169,72,0.3); border-radius: 2px;
+    }
+
+    /* ─── Credits grid ─── */
+    .credits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+      gap: 18px; margin-bottom: 24px;
+    }
+    @media (max-width: 640px) { .credits-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+
+    .credit-card {
+      display: block; border-radius: 5px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--card-bg);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .credit-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+      transform: translateY(-3px);
+    }
+    .credit-poster { aspect-ratio: 2/3; position: relative; overflow: hidden; }
+    .credit-poster img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; transition: transform 0.4s ease;
+    }
+    .credit-card:hover .credit-poster img { transform: scale(1.04); }
+    .credit-poster img.hidden { opacity: 0; }
+    .credit-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 50%);
+      opacity: 0; transition: opacity 0.3s; z-index: 2;
+      display: flex; align-items: flex-end; padding: 12px;
+    }
+    .credit-card:hover .credit-card-overlay { opacity: 1; }
+    .credit-card-overlay-role { font-size: 9px; letter-spacing: 0.22em; color: var(--warm); }
+    .credit-info { padding: 10px 12px 12px; }
+    .credit-title {
+      font-size: 11.5px; font-weight: 500; letter-spacing: 0.06em;
+      color: var(--text); line-height: 1.35; margin-bottom: 4px;
+    }
+    .credit-year-type {
+      font-size: 9.5px; letter-spacing: 0.14em; color: var(--text-dim); margin-bottom: 6px;
+    }
+    .credit-role-chip {
+      display: inline-block; font-size: 8.5px; letter-spacing: 0.18em;
+      color: var(--warm); border: 1px solid rgba(232,169,72,0.18);
+      border-radius: 2px; padding: 2px 6px;
+    }
+    .credit-coming-soon {
+      display: inline-block; font-size: 8px; letter-spacing: 0.2em;
+      color: var(--text-dim); border: 1px solid var(--border);
+      border-radius: 2px; padding: 2px 6px; margin-left: 4px;
+    }
+
+    /* ─── "Feed the Fowler" Easter Egg ─── */
+    .easter-egg {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      z-index: 50;
+      transform: rotate(-8deg);
+      transition: transform 0.3s;
+    }
+    .easter-egg:hover { transform: rotate(-4deg) scale(1.06); }
+    .easter-egg-inner {
+      background: var(--warm);
+      color: var(--darkest);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem; letter-spacing: 0.22em;
+      padding: 8px 16px 10px;
+      border-radius: 2px;
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.6);
+      /* torn paper effect */
+      clip-path: polygon(0% 8%, 3% 0%, 8% 6%, 12% 0%, 18% 5%, 24% 0%, 30% 7%, 36% 1%, 42% 6%, 48% 0%, 54% 5%, 60% 1%, 66% 6%, 72% 0%, 78% 5%, 84% 0%, 90% 6%, 95% 1%, 100% 4%, 100% 88%, 97% 100%, 92% 94%, 87% 100%, 81% 93%, 76% 100%, 70% 95%, 65% 100%, 59% 94%, 53% 100%, 47% 95%, 41% 100%, 35% 95%, 29% 100%, 23% 93%, 17% 100%, 11% 95%, 5% 100%, 0% 95%);
+    }
+    .easter-egg-sub {
+      display: block; font-family: 'IBM Plex Mono', monospace;
+      font-size: 7px; letter-spacing: 0.18em; opacity: 0.65; margin-top: 1px;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 100px; padding: 40px 0 48px;
+    }
+    .footer-inner {
+      max-width: 1480px; margin: 0 auto; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    @media (max-width: 768px) { .footer-inner { padding: 0 20px; } }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.28em; color: var(--warm); opacity: 0.6;
+    }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-size: 9.5px; letter-spacing: 0.2em; color: var(--text-dim);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-mid); }
+    .footer-copy { font-size: 9.5px; letter-spacing: 0.15em; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+
+  <div class="bg-fixed bg-gradient"></div>
+  <div class="bg-fixed bg-grain"></div>
+
+  <!-- ─── Header ─── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="site-logo"><a href="index.html">DFTF.IO</a></span>
+      <nav>
+        <ul class="site-nav">
+          <li><a href="#editorial">CREDITS</a></li>
+          <li><a href="#apps">APPS</a></li>
+          <li><a href="https://www.imdb.com/name/nm9598594/" target="_blank" class="nav-imdb">IMDB ↗</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- ─── Hero / Intro ─── -->
+    <section class="intro">
+      <p class="intro-eyebrow">FILM EDITOR &amp; POST PRODUCTION</p>
+      <h1 class="intro-name">ZACH<br><span>FOWLER</span></h1>
+      <p class="intro-stats-line">
+        <strong>18+</strong> credits across <strong>Editorial</strong>, <strong>VFX</strong>, and <strong>Directing</strong> &nbsp;·&nbsp;
+        Features · TV Series · Documentaries
+      </p>
+
+      <!-- Studio logos strip -->
+      <div class="studios-strip">
+        <div class="studios-track">
+          <span class="studio-name">ANGEL STUDIOS</span>
+          <span class="studio-name">LIONSGATE</span>
+          <span class="studio-name">KINGDOM STORY COMPANY</span>
+          <span class="studio-name">KENDRICK BROTHERS</span>
+          <span class="studio-name">WONDER ORIGINALS</span>
+          <span class="studio-name">FOR KING + COUNTRY</span>
+          <!-- duplicate for seamless loop -->
+          <span class="studio-name">ANGEL STUDIOS</span>
+          <span class="studio-name">LIONSGATE</span>
+          <span class="studio-name">KINGDOM STORY COMPANY</span>
+          <span class="studio-name">KENDRICK BROTHERS</span>
+          <span class="studio-name">WONDER ORIGINALS</span>
+          <span class="studio-name">FOR KING + COUNTRY</span>
+        </div>
+      </div>
+
+      <!-- Festival laurels / accolades -->
+      <div class="accolades">
+        <span class="accolade-chip">★ IMDb 8.4 · A Rush of Hope</span>
+        <span class="accolade-chip">★ IMDb 8.3 · Drummer Boy Christmas</span>
+        <span class="accolade-chip">★ IMDb 8.2 · No Turning Back</span>
+        <span class="accolade-chip">★ IMDb 7.5 · House of David</span>
+        <span class="accolade-chip">★ IMDb 7.4 · Ordinary Angels</span>
+      </div>
+
+      <!-- Apps section -->
+      <div class="apps-section" id="apps">
+        <p class="apps-label">Apps</p>
+        <div class="apps-row">
+
+          <a class="app-icon" href="https://app.comppilot.io" target="_blank">
+            <div class="app-icon-img cp">CP</div>
+            <span class="app-icon-name">CompPilot</span>
+          </a>
+
+          <a class="app-icon" href="https://brain.dftf.io" target="_blank">
+            <div class="app-icon-img br">BR</div>
+            <span class="app-icon-name">Brain</span>
+          </a>
+
+          <div class="app-icon" style="cursor:default; opacity:0.55;">
+            <div class="app-icon-img xml">XML</div>
+            <span class="app-icon-name">
+              XML Converter
+              <span class="coming-soon-dot">SOON</span>
+            </span>
+          </div>
+
+          <div class="app-icon" style="cursor:default; opacity:0.55;">
+            <div class="app-icon-img cl">CL</div>
+            <span class="app-icon-name">
+              Change Log
+              <span class="coming-soon-dot">SOON</span>
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Featured ─── -->
+    <section>
+      <div class="section-head">
+        <h2 class="section-title">FEATURED</h2>
+        <div class="section-rule"></div>
+      </div>
+
+      <div class="featured-grid">
+
+        <!-- House of David -->
+        <a class="featured-card" href="https://www.imdb.com/title/tt21825902/" target="_blank">
+          <div class="featured-poster">
+            <div class="poster-placeholder">
+              <span class="placeholder-initials">HOUSE<br>OF<br>DAVID</span>
+            </div>
+            <img src="https://m.media-amazon.com/images/M/MV5BZWExMTJiMGQtYTA3OC00ZGM0LTg5MGQtZjMwM2VlNTU3YjRhXkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="House of David" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="badge-tray">
+              <span class="badge badge-season">SEASON 1</span>
+              <span class="badge badge-season">SEASON 2</span>
+            </div>
+            <div class="rating-badge">★ 7.5</div>
+            <div class="featured-overlay">
+              <p class="featured-role-tag">EDITOR · POST SUPERVISOR</p>
+              <h3 class="featured-title">House of David</h3>
+              <p class="featured-meta">
+                <span>2025</span>
+                <span class="meta-dot">·</span>
+                <span>TV Series</span>
+                <span class="meta-dot">·</span>
+                <span>Angel Studios</span>
+              </p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Young Washington -->
+        <a class="featured-card" href="https://www.imdb.com/title/tt32104007/" target="_blank">
+          <div class="featured-poster">
+            <div class="poster-placeholder">
+              <span class="placeholder-initials">YOUNG<br>WASH<br>INGTON</span>
+            </div>
+            <div class="poster-coming-soon">
+              <span class="poster-coming-soon-text">COMING SOON</span>
+            </div>
+            <div class="badge-tray">
+              <span class="badge badge-soon">2026</span>
+            </div>
+            <div class="featured-overlay">
+              <p class="featured-role-tag">ASSISTANT EDITOR</p>
+              <h3 class="featured-title">Young Washington</h3>
+              <p class="featured-meta">
+                <span>2026</span>
+                <span class="meta-dot">·</span>
+                <span>Feature Film</span>
+              </p>
+              <p class="featured-cast">Andy Serkis · Sir Ben Kingsley · Steven Lang</p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Unsung Hero -->
+        <a class="featured-card" href="https://www.imdb.com/title/tt23638614/" target="_blank">
+          <div class="featured-poster">
+            <div class="poster-placeholder">
+              <span class="placeholder-initials">UNSUNG<br>HERO</span>
+            </div>
+            <img src="https://m.media-amazon.com/images/M/MV5BZDQ4YTRlNGQtNjI5My00MGUxLTg1ODYtMTFiY2MwYmRlMmEyXkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="Unsung Hero" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="badge-tray">
+              <span class="badge badge-studio">LIONSGATE</span>
+            </div>
+            <div class="rating-badge">★ 7.0</div>
+            <div class="featured-overlay">
+              <p class="featured-role-tag">POST SUPERVISOR</p>
+              <h3 class="featured-title">Unsung Hero</h3>
+              <p class="featured-meta">
+                <span>2024</span>
+                <span class="meta-dot">·</span>
+                <span>Feature Film</span>
+                <span class="meta-dot">·</span>
+                <span>Kingdom Story / Lionsgate</span>
+              </p>
+              <p class="featured-cast">Joel Smallbone</p>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ─── Editorial Department ─── -->
+    <section id="editorial">
+      <div class="section-head">
+        <h2 class="section-title">EDITORIAL DEPARTMENT</h2>
+        <span class="section-count">7 Credits</span>
+        <div class="section-rule"></div>
+      </div>
+
+      <div class="credits-grid">
+
+        <!-- Homestead TV Series -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt32218024/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">HOME<br>STEAD</div></div>
+            <img src="" alt="Homestead: The Series" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITORIAL</span></div>
+            <div class="rating-badge">★ 5.8</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Homestead</p>
+            <p class="credit-year-type">2024 · TV Series</p>
+            <span class="credit-role-chip">Editorial</span>
+          </div>
+        </a>
+
+        <!-- Homestead Film -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt15419020/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">HOME<br>STEAD</div></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BYjA2Y2IzMGQtMzY3Zi00YzI2LWIyOGUtMzkwYzVkYmU5ZWY5XkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="Homestead" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITORIAL</span></div>
+            <div class="rating-badge">★ 5.2</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Homestead</p>
+            <p class="credit-year-type">2024 · Feature Film</p>
+            <span class="credit-role-chip">Editorial</span>
+          </div>
+        </a>
+
+        <!-- Ordinary Angels -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt14164730/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">OA</div></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BMzg3OTliZDMtNTBhYy00OGMzLTlhZmUtMDMyNjQ4NDc4MDk5XkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="Ordinary Angels" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">VFX EDITOR</span></div>
+            <div class="rating-badge">★ 7.4</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Ordinary Angels</p>
+            <p class="credit-year-type">2024 · Feature Film · Lionsgate</p>
+            <span class="credit-role-chip">VFX Editor</span>
+          </div>
+        </a>
+
+        <!-- The Mulligan -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt11563926/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">THE<br>MULL<br>IGAN</div></div>
+            <img src="" alt="The Mulligan" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">The Mulligan</p>
+            <p class="credit-year-type">2022 · Feature Film</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+        <!-- Birthright Outlaw -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt28078052/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">BIRTH<br>RIGHT</div></div>
+            <img src="" alt="Birthright Outlaw" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Birthright Outlaw</p>
+            <p class="credit-year-type">2023 · Feature Film</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+        <!-- Johnny Cash -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt23112636/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">JC</div></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BNzcxZTA0NTAtM2RkNy00NWI1LTg5M2QtY2I2ZjAzNGVkNmNjXkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="Johnny Cash: The Redemption of an American Icon" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR</span></div>
+            <div class="rating-badge">★ 7.2</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Johnny Cash: The Redemption of an American Icon</p>
+            <p class="credit-year-type">2022 · Documentary</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+        <!-- Drummer Boy Christmas -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt34422601/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">DBC</div></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BMmQ5N2ZmNDEtYmUyYy00NDg3LWIwNGUtZmU3YjE0NTE2MTcwXkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="Drummer Boy: A Christmas Special" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">ASST. EDITOR</span></div>
+            <div class="rating-badge">★ 8.3</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Drummer Boy: A Christmas Special</p>
+            <p class="credit-year-type">2024 · Concert Film · For King &amp; Country</p>
+            <span class="credit-role-chip">Asst. Editor</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ─── Other Credits ─── -->
+    <section>
+      <div class="section-head">
+        <h2 class="section-title">OTHER CREDITS</h2>
+        <span class="section-count">7 Credits</span>
+        <div class="section-rule"></div>
+      </div>
+
+      <div class="credits-grid">
+
+        <!-- A Rush of Hope -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt11167640/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">ARH</div></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BYmZkZTUyNDAtYzMxMS00M2E2LTg3ODItYjAyMzE1ZTVmMDQ5XkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="A Rush of Hope" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR · DIRECTOR</span></div>
+            <div class="rating-badge">★ 8.4</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">A Rush of Hope</p>
+            <p class="credit-year-type">2020 · Documentary</p>
+            <span class="credit-role-chip">Editor / Director</span>
+          </div>
+        </a>
+
+        <!-- Dinner with Godfather -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt14649444/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">DWG</div></div>
+            <img src="images/Dinner with G.jpeg" alt="Dinner with Godfather" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Dinner with Godfather</p>
+            <p class="credit-year-type">2021 · Short Film</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+        <!-- Trinity Community Church -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt12564162/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">TCC</div></div>
+            <img src="" alt="Trinity Community Church" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Trinity Community Church</p>
+            <p class="credit-year-type">2020 · Video</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+        <!-- American Family Revival -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt8621740/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">AFR</div></div>
+            <img src="images/American Fam R.jpeg" alt="American Family Revival" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">CO-EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">American Family Revival</p>
+            <p class="credit-year-type">2018 · Documentary</p>
+            <span class="credit-role-chip">Co-Editor</span>
+          </div>
+        </a>
+
+        <!-- The Greatest Short Film Ever Made -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt11516928/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">TGSFE</div></div>
+            <img src="images/GreatestShortFilm.jpeg" alt="The Greatest Short Film Ever Made" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">ASST. EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">The Greatest Short Film Ever Made</p>
+            <p class="credit-year-type">2019 · Short</p>
+            <span class="credit-role-chip">Asst. Editor</span>
+          </div>
+        </a>
+
+        <!-- The Ultimate Story -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt13455430/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">TUS</div></div>
+            <img src="images/UltimateStory.png" alt="The Ultimate Story" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR</span></div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">The Ultimate Story</p>
+            <p class="credit-year-type">2020 · Video</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+        <!-- Bump -->
+        <a class="credit-card" href="https://www.imdb.com/title/tt10231304/" target="_blank">
+          <div class="credit-poster">
+            <div class="poster-placeholder"><div class="placeholder-initials">BUMP</div></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BODVmYWE4NzEtNjFjMy00ZTEwLThlMmEtNmRlMTJmNWViZTYxXkEyXkFqcGc@._V1_QL75_UX500_.jpg"
+                 alt="Bump" loading="lazy" onerror="this.classList.add('hidden')">
+            <div class="credit-card-overlay"><span class="credit-card-overlay-role">EDITOR · VFX</span></div>
+            <div class="rating-badge">★ 7.5</div>
+          </div>
+          <div class="credit-info">
+            <p class="credit-title">Bump</p>
+            <p class="credit-year-type">2019 · Short</p>
+            <span class="credit-role-chip">Editor</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── "Feed the Fowler" Easter Egg ─── -->
+  <a class="easter-egg" href="#donate" title="Feed the Fowler">
+    <div class="easter-egg-inner">
+      🍗 FEED THE FOWLER
+      <span class="easter-egg-sub">tip jar coming soon</span>
+    </div>
+  </a>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-logo">DFTF.IO</span>
+      <div class="footer-links">
+        <a href="https://www.imdb.com/name/nm9598594/" target="_blank">IMDb ↗</a>
+        <a href="https://app.comppilot.io" target="_blank">CompPilot ↗</a>
+        <a href="https://brain.dftf.io" target="_blank">Brain ↗</a>
+      </div>
+      <span class="footer-copy">© 2026 Zachary Fowler</span>
+    </div>
+  </footer>
+
+</body>
+</html>
