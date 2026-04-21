@@ -124,12 +124,12 @@
     .enter-btn {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 44px;
-      margin-top: 60px;
+      gap: 9px;
+      padding: 10px 33px;
+      margin-top: 45px;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.3rem;
-      letter-spacing: 0.35em;
+      font-size: 0.975rem;
+      letter-spacing: 0.26em;
       color: var(--darkest);
       background: var(--warm);
       border: none;
@@ -239,6 +239,7 @@
     .app-bar-icon.br  { background: linear-gradient(145deg, #1a1e2d, #0e1118); color: #5c7cad; }
     .app-bar-icon.xml { background: linear-gradient(145deg, #2d1e1e, #1a0e0e); color: #ad5c5c; }
     .app-bar-icon.cl  { background: linear-gradient(145deg, #2a2218, #1a150e); color: #e8a948; }
+    .app-bar-icon.tc  { background: linear-gradient(145deg, #1a2228, #0e1518); color: #5ca8ad; }
     .app-bar-label {
       font-size: 7.5px; letter-spacing: 0.12em;
       color: rgba(224, 221, 213, 0.7);
@@ -394,7 +395,7 @@
     @media (max-width: 480px) {
       .landing-content { padding: 36px 24px; }
       .brand-title { font-size: 2rem; letter-spacing: 0.14em; }
-      .enter-btn { padding: 12px 32px; font-size: 1.1rem; }
+      .enter-btn { padding: 9px 24px; font-size: 0.85rem; }
       .app-bar { gap: 14px; right: 16px; bottom: 20px; }
     }
   </style>
@@ -468,6 +469,10 @@
     <a class="app-bar-item" href="https://changelist.dftf.io" target="_blank">
       <div class="app-bar-icon cl">CL</div>
       <span class="app-bar-label">Change List</span>
+    </a>
+    <a class="app-bar-item" href="https://calculators.dftf.io" target="_blank">
+      <div class="app-bar-icon tc">TC</div>
+      <span class="app-bar-label">Calculators</span>
     </a>
   </div>
 
@@ -571,3 +576,4 @@
 
 </body>
 </html>
+
